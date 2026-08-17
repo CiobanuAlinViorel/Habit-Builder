@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FREQUENCY_PRESETS, MAX_WINDOW_DAYS } from "@/shared/lib/habitFrequency";
+import Select from "@/shared/components/Select";
 
 const CUSTOM_KEY = "custom";
 
@@ -35,30 +36,25 @@ export default function FrequencyFields({
 
     const isCustom = selected === CUSTOM_KEY;
 
+    const options = [
+        ...FREQUENCY_PRESETS.map((preset) => ({
+            value: presetKey(preset.windowDays, preset.target),
+            label: preset.label,
+        })),
+        { value: CUSTOM_KEY, label: "Custom…" },
+    ];
+
     return (
         <div className="flex flex-col gap-1.5">
             <label htmlFor="frequency-preset" className="text-sm font-medium">
                 Frequency
             </label>
-            <select
+            <Select
                 id="frequency-preset"
                 value={selected}
-                onChange={(event) => setSelected(event.target.value)}
-                className="rounded-md border border-brand-slate/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-emerald"
-            >
-                {FREQUENCY_PRESETS.map((preset) => (
-                    <option
-                        key={presetKey(preset.windowDays, preset.target)}
-                        value={presetKey(preset.windowDays, preset.target)}
-                        className="bg-background text-foreground"
-                    >
-                        {preset.label}
-                    </option>
-                ))}
-                <option value={CUSTOM_KEY} className="bg-background text-foreground">
-                    Custom…
-                </option>
-            </select>
+                onChange={setSelected}
+                options={options}
+            />
 
             {isCustom ? (
                 <div className="flex items-center gap-2 text-sm">

@@ -108,13 +108,25 @@ export async function checkInHabit(habitId: string): Promise<CheckInResult> {
         }
 
         const currentPeriod = periodIndexForDate(now, habit.frequencyWindowDays);
-        const periodCompletions =
-            habit.periodIndex === currentPeriod ? habit.periodCompletions + 1 : 1;
+        const isNewPeriod = habit.periodIndex !== currentPeriod;
+        const periodCompletions = isNewPeriod ? 1 : habit.periodCompletions + 1;
+
+        // The streak only advances once per period -- extra check-ins within
+        // a period you've already claimed (targets > 1) don't inflate it --
+        // and only when the new period immediately follows the last one that
+        // had a completion. Any gap (a missed day for a daily habit, a
+        // missed week for a weekly one, and so on for every frequency)
+        // restarts the streak at 1 instead of continuing it.
+        const streak = !isNewPeriod
+            ? habit.streak
+            : habit.periodIndex !== null && currentPeriod === habit.periodIndex + 1
+                ? habit.streak + 1
+                : 1;
 
         await tx.habit.update({
             where: { id: habitId },
             data: {
-                streak: { increment: 1 },
+                streak,
                 lastCompletedAt: now,
                 periodIndex: currentPeriod,
                 periodCompletions,

@@ -15,6 +15,7 @@ import {
     getCheckInEligibility,
 } from "@/shared/lib/habitFrequency";
 import FrequencyFields from "./FrequencyFields";
+import { Flame, TrashIcon } from "lucide-react";
 
 type Habit = {
     id: string;
@@ -51,7 +52,7 @@ export default function HabitCard({ habit }: { habit: Habit }) {
     }
 
     return (
-        <li className="flex flex-col gap-3 rounded-lg border border-brand-slate/30 p-4">
+        <li className="flex flex-col gap-3 rounded-lg border border-brand-slate/30 p-4 bg-blue-900 text-white">
             {isEditing ? (
                 <form
                     action={async (formData) => {
@@ -120,8 +121,8 @@ export default function HabitCard({ habit }: { habit: Habit }) {
 
                     <div className="flex flex-wrap items-center gap-3">
                         {habit.streak > 1 && (
-                            <span className="rounded-full bg-brand-emerald/15 px-3 py-1 text-sm font-semibold text-brand-emerald">
-                                🔥 {habit.streak} days
+                            <span className="rounded-full  px-3 py-1 text-sm font-semibold text-emerald-300 bg-emerald-700 flex gap-2 items-center">
+                                <Flame className="w-5 h-5" /> {habit.streak} days
                             </span>
                         )}
 
@@ -133,8 +134,8 @@ export default function HabitCard({ habit }: { habit: Habit }) {
                                 eligibility.allowed
                                     ? "Mark today done"
                                     : eligibility.reason === "already-done-today"
-                                      ? "Already checked in today"
-                                      : "Target already met for this period"
+                                        ? "Already checked in today"
+                                        : "Target already met for this period"
                             }
                             className="rounded-md bg-brand-emerald px-3 py-1.5 text-sm font-semibold text-brand-navy-dark transition-colors hover:bg-brand-mint disabled:cursor-not-allowed disabled:bg-brand-slate/40 disabled:text-brand-offwhite/70"
                         >
@@ -156,9 +157,10 @@ export default function HabitCard({ habit }: { habit: Habit }) {
                                     startTransition(() => deleteHabit(habit.id));
                                 }
                             }}
-                            className="rounded-md border border-red-500/40 px-3 py-1.5 text-sm font-medium text-red-500 hover:bg-red-500/10 disabled:opacity-60"
+                            className="rounded-md border   border-red-500/40 px-3 py-1.5 text-sm 
+                             bg-red-500 font-medium text-white hover:bg-red-500/90 disabled:opacity-60"
                         >
-                            Delete
+                            <TrashIcon className="h-4 w-4" />
                         </button>
                     </div>
                 </div>
